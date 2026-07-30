@@ -5,10 +5,18 @@ export default function MyClients() {
 
   const [clients, setClients] = useState([]);
 
-  useEffect(() => {
+  const fetchMyClients = () => {
     axios
       .get("http://localhost:4000/my-clients/1")
       .then(res => setClients(res.data));
+  };
+
+  useEffect(() => {
+    fetchMyClients();
+
+    const interval = setInterval(fetchMyClients, 2000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (

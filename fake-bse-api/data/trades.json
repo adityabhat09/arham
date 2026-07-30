@@ -19,5 +19,12 @@
     "symbol": "RELIANCE",
     "quantity": 5,
     "date": "2026-07-22"
+  },
+  {
+    "tradeId": 1004,
+    "clientId": 5,
+    "symbol": "RELIANCE",
+    "quantity": 2,
+    "date": "2026-07-22"
   }
 ]

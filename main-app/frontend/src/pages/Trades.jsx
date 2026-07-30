@@ -19,8 +19,14 @@ export default function Trades() {
     };
 
     useEffect(() => {
+        if (clientId || from || to) return;
+
         loadTrades();
-    }, []);
+
+        const interval = setInterval(loadTrades, 2000);
+
+        return () => clearInterval(interval);
+    }, [clientId, from, to]);
 
     return (
         <>
@@ -54,10 +60,7 @@ export default function Trades() {
                     onChange={(e) => setTo(e.target.value)}
                 />
 
-                <button
-                    onClick={loadTrades}
-                    style={{ marginLeft: "10px" }}
-                >
+                <button onClick={loadTrades} style={{ marginLeft: "10px" }}>
                     Search
                 </button>
             </div>

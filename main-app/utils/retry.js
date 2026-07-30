@@ -1,18 +1,21 @@
-async function retry(fn, retries = 3) {
-
+async function retry(fn, label = "Request", retries = 3) {
     for (let i = 1; i <= retries; i++) {
 
         try {
 
-            console.log(`Attempt ${i}`);
+            console.log(`🔁 [${label}] Attempt ${i}`);
 
-            return await fn();
+            const result = await fn();
 
+            console.log(`✅ [${label}] Success`);
+
+            return result;
         } catch (error) {
 
-            console.log(`Attempt ${i} failed`);
+            console.log(`❌ [${label}] Attempt ${i} failed`);
 
             if (i === retries) {
+                console.log(`🚫 [${label}] All ${retries} retry attempts exhausted`);
                 throw error;
             }
 

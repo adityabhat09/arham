@@ -1,3 +1,7 @@
+const {
+    refreshDashboardCache
+} = require("../services/dashboardService");
+
 const express = require("express");
 const router = express.Router();
 
@@ -8,6 +12,7 @@ router.get("/:employeeId", async (req, res) => {
     const { employeeId } = req.params;
 
     const cache = await readCache();
+    console.log(`📦 Returning incentive data from cache`);
 
     const { mappings, trades } = cache;
 
@@ -32,6 +37,7 @@ router.get("/:employeeId", async (req, res) => {
         totalQuantity,
         incentive
     });
+    refreshDashboardCache();
 
 });
 

@@ -2,6 +2,9 @@ const {
     readCache,
     writeCache
 } = require("../services/cacheService");
+const {
+    refreshDashboardCache
+} = require("../services/dashboardService");
 
 const express = require("express");
 
@@ -18,49 +21,32 @@ const retry = require("../utils/retry");
 
 router.get("/", async (req, res) => {
 
+    console.log("\n==============================");
+    console.log("📥 Dashboard request received");
+
     const cachedData = await readCache();
+
+    console.log("⚡ Serving cached dashboard data to client");
 
     res.json(cachedData);
 
     (async () => {
 
-        try {
+    try {
 
-            const results = await Promise.allSettled([
-                retry(getClients),
-                retry(getTrades),
-                getEmployees(),
-                getMappings()
-            ]);
+        console.log("📡 Refreshing dashboard cache...");
 
-            const clients =
-                results[0].status === "fulfilled" ? results[0].value : [];
+        await refreshDashboardCache();
 
-            const trades =
-                results[1].status === "fulfilled" ? results[1].value : [];
+        console.log("✅ Cache refreshed successfully");
 
-            const employees =
-                results[2].status === "fulfilled" ? results[2].value : [];
+    } catch (error) {
 
-            const mappings =
-                results[3].status === "fulfilled" ? results[3].value : [];
+        console.error("❌ Background refresh failed:", error.message);
 
-            const dashboardData = {
-                clients,
-                trades,
-                employees,
-                mappings
-            };
+    }
 
-            await writeCache(dashboardData);
-
-        } catch (error) {
-
-            console.error("Background refresh failed:", error);
-
-        }
-
-    })();
+})();
 
 });
 

@@ -1,3 +1,7 @@
+const {
+    refreshDashboardCache
+} = require("../services/dashboardService");
+
 const express = require("express");
 
 const router = express.Router();
@@ -9,6 +13,8 @@ const {
 router.get("/", async (req, res) => {
 
     const cache = await readCache();
+
+    console.log(`📦 Returning ${cache.trades.length} trades from cache`);
 
     let trades = cache.trades;
     const { clientId, from, to } = req.query;
@@ -30,6 +36,7 @@ router.get("/", async (req, res) => {
     }
 
     res.json(trades);
+    refreshDashboardCache();
 
 });
 

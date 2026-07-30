@@ -1,3 +1,7 @@
+const {
+    refreshDashboardCache
+} = require("../services/dashboardService");
+
 const express = require("express");
 const router = express.Router();
 
@@ -8,6 +12,7 @@ router.get("/:employeeId", async (req, res) => {
     const { employeeId } = req.params;
 
     const cache = await readCache();
+    
 
     // console.log(cache);
 
@@ -22,8 +27,10 @@ router.get("/:employeeId", async (req, res) => {
     const myClients = clients.filter(client =>
     clientIds.includes(client.id)
 );
+console.log(`📦 Returning ${myClients.length} assigned clients from cache`);
 
     res.json(myClients);
+    refreshDashboardCache();
 
 });
 
