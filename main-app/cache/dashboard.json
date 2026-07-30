@@ -1,1 +1,68 @@
-{}
+{
+  "clients": [
+    {
+      "id": 1,
+      "name": "Rahul Sharma",
+      "pan": "ABCDE1234F"
+    },
+    {
+      "id": 2,
+      "name": "Priya Patel",
+      "pan": "PQRSX6789L"
+    },
+    {
+      "id": 3,
+      "name": "Amit Singh",
+      "pan": "LMNOP4567K"
+    }
+  ],
+  "trades": [
+    {
+      "tradeId": 1001,
+      "clientId": 1,
+      "symbol": "TCS",
+      "quantity": 20,
+      "date": "2026-07-10"
+    },
+    {
+      "tradeId": 1002,
+      "clientId": 2,
+      "symbol": "INFY",
+      "quantity": 15,
+      "date": "2026-07-15"
+    },
+    {
+      "tradeId": 1003,
+      "clientId": 3,
+      "symbol": "RELIANCE",
+      "quantity": 5,
+      "date": "2026-07-22"
+    }
+  ],
+  "employees": [
+    {
+      "id": 1,
+      "name": "John",
+      "department": "Operations"
+    },
+    {
+      "id": 2,
+      "name": "Sarah",
+      "department": "Support"
+    }
+  ],
+  "mappings": [
+    {
+      "clientId": 1,
+      "employeeId": 1
+    },
+    {
+      "clientId": 2,
+      "employeeId": 2
+    },
+    {
+      "clientId": 3,
+      "employeeId": 1
+    }
+  ]
+}

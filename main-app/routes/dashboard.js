@@ -18,52 +18,49 @@ const retry = require("../utils/retry");
 
 router.get("/", async (req, res) => {
 
-    try {
-        const results = await Promise.allSettled([
-            retry(getClients),
-            retry(getTrades),
-            getEmployees(),
-            getMappings()
-        ]);
-        const clients = results[0];
-        const trades = results[1];
-        const employees = results[2];
-        const mappings = results[3];
-        const errors = {};
+    const cachedData = await readCache();
 
-        res.json({
+    res.json(cachedData);
 
-            clients:
-                clients.status === "fulfilled"
-                    ? clients.value
-                    : (errors.clients = "BSE API unavailable", null),
+    (async () => {
 
-            trades:
-                trades.status === "fulfilled"
-                    ? trades.value
-                    : (errors.trades = "BSE API unavailable", null),
+        try {
 
-            employees:
-                employees.status === "fulfilled"
-                    ? employees.value
-                    : null,
+            const results = await Promise.allSettled([
+                retry(getClients),
+                retry(getTrades),
+                getEmployees(),
+                getMappings()
+            ]);
 
-            mappings:
-                mappings.status === "fulfilled"
-                    ? mappings.value
-                    : null,
+            const clients =
+                results[0].status === "fulfilled" ? results[0].value : [];
 
-            errors
+            const trades =
+                results[1].status === "fulfilled" ? results[1].value : [];
 
-        });
+            const employees =
+                results[2].status === "fulfilled" ? results[2].value : [];
 
-    } catch (error) {
+            const mappings =
+                results[3].status === "fulfilled" ? results[3].value : [];
 
-        res.status(500).json({
-            message: error.message
-        });
+            const dashboardData = {
+                clients,
+                trades,
+                employees,
+                mappings
+            };
 
-    }
+            await writeCache(dashboardData);
+
+        } catch (error) {
+
+            console.error("Background refresh failed:", error);
+
+        }
+
+    })();
 
 });
 

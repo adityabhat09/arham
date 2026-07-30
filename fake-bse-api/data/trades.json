@@ -3,18 +3,21 @@
     "tradeId": 1001,
     "clientId": 1,
     "symbol": "TCS",
-    "quantity": 20
+    "quantity": 20,
+    "date": "2026-07-10"
   },
   {
     "tradeId": 1002,
     "clientId": 2,
     "symbol": "INFY",
-    "quantity": 15
+    "quantity": 15,
+    "date": "2026-07-15"
   },
   {
     "tradeId": 1003,
     "clientId": 3,
     "symbol": "RELIANCE",
-    "quantity": 5
+    "quantity": 5,
+    "date": "2026-07-22"
   }
 ]
