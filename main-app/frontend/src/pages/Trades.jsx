@@ -9,7 +9,7 @@ export default function Trades() {
     const [to, setTo] = useState("");
 
     const loadTrades = () => {
-        let url = "http://localhost:4000/trades?";
+        let url = `${import.meta.env.VITE_API_URL}/trades?`;
 
         if (clientId) url += `clientId=${clientId}&`;
         if (from) url += `from=${from}&`;

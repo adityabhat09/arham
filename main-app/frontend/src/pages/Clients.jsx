@@ -6,8 +6,7 @@ export default function Clients() {
   const [clients, setClients] = useState([]);
 
   const fetchClients = () => {
-    axios
-      .get("http://localhost:4000/clients")
+    axios.get(`${import.meta.env.VITE_API_URL}/clients`)
       .then(res => setClients(res.data));
   };
 

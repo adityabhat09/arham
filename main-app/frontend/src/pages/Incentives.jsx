@@ -7,7 +7,7 @@ export default function Incentives() {
 
   const fetchIncentives = () => {
     axios
-      .get("http://localhost:4000/incentives/1")
+      .get(`${import.meta.env.VITE_API_URL}/incentives/1`)
       .then(res => setData(res.data));
   };
 

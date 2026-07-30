@@ -7,7 +7,7 @@ export default function Employees() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/employees")
+      .get(`${import.meta.env.VITE_API_URL}/employees`)
       .then(res => setEmployees(res.data));
   }, []);
 
