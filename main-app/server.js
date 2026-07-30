@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 
 const incentivesRoute = require("./routes/incentives");
 const myClientsRoute = require("./routes/myClients");
@@ -11,6 +12,7 @@ const tradesRoute = require("./routes/trades");
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/incentives", incentivesRoute);

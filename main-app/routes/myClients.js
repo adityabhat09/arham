@@ -9,7 +9,7 @@ router.get("/:employeeId", async (req, res) => {
 
     const cache = await readCache();
 
-    console.log(cache);
+    // console.log(cache);
 
 
     const mappings = cache.mappings;
