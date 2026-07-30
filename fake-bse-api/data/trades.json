@@ -1,0 +1,20 @@
+[
+  {
+    "tradeId": 1001,
+    "clientId": 1,
+    "symbol": "TCS",
+    "quantity": 20
+  },
+  {
+    "tradeId": 1002,
+    "clientId": 2,
+    "symbol": "INFY",
+    "quantity": 15
+  },
+  {
+    "tradeId": 1003,
+    "clientId": 3,
+    "symbol": "RELIANCE",
+    "quantity": 5
+  }
+]
