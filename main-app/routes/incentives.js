@@ -9,21 +9,29 @@ router.get("/:employeeId", async (req, res) => {
 
     const cache = await readCache();
 
-    console.log(cache);
-
-
-    const mappings = cache.mappings;
-    const clients = cache.clients;
+    const { mappings, trades } = cache;
 
     const clientIds = mappings
         .filter(mapping => mapping.employeeId == employeeId)
         .map(mapping => mapping.clientId);
 
-    const myClients = clients.filter(client =>
-    clientIds.includes(client.id)
-);
+    const myTrades = trades.filter(trade =>
+        clientIds.includes(trade.clientId)
+    );
 
-    res.json(myClients);
+    const totalQuantity = myTrades.reduce(
+        (sum, trade) => sum + trade.quantity,
+        0
+    );
+
+    const incentive = totalQuantity * 10;
+
+    res.json({
+        employeeId,
+        totalTrades: myTrades.length,
+        totalQuantity,
+        incentive
+    });
 
 });
 

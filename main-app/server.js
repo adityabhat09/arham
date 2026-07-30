@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 
+const incentivesRoute = require("./routes/incentives");
 const myClientsRoute = require("./routes/myClients");
 const clientsRoute = require("./routes/clients");
 const employeesRoute = require("./routes/employees");
@@ -12,6 +13,8 @@ const app = express();
 
 app.use(express.json());
 
+app.use("/incentives", incentivesRoute);
+app.use("/my-clients", myClientsRoute);
 app.use("/dashboard", dashboardRoute);
 app.use("/employees", employeesRoute);
 app.use("/clients", clientsRoute);
