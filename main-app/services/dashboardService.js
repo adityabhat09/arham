@@ -6,7 +6,9 @@ const { broadcast } = require("./sseService");
 // ─── Refresh lock & time-gate ───────────────────────────────────────────────
 let isRefreshing  = false;
 let lastRefreshedAt = 0;
-const REFRESH_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes — prevents hammering BSE
+// Configurable via env — set REFRESH_COOLDOWN_MS=60000 on Render for demo
+const REFRESH_COOLDOWN_MS = Number(process.env.REFRESH_COOLDOWN_MS) || 5 * 60 * 1000;
+
 
 async function refreshDashboardCache() {
 
