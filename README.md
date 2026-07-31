@@ -1,3 +1,5 @@
+# Arham Fintech Coding Assignment
+
 ## Description
 
 This repository contains the solution for the Arham Fintech coding assignment, including:
@@ -5,31 +7,29 @@ This repository contains the solution for the Arham Fintech coding assignment, i
 - Part A: Mock BSE API
 - Part B: Internal Dashboard
 
-# Arham Fintech Coding Assignment
+## Overview
+
+This project consists of three components:
+
+- **Mock BSE API** – Simulates the external BSE Exchange API by providing client and trade data with configurable delays and random failures to mimic real-world conditions.
+
+- **Main App API** – Acts as the backend service that fetches data from the Mock BSE API, combines it with internal employee and client-mapping data, maintains a stale-while-revalidate cache, retries failed requests, and exposes APIs for the dashboard.
+
+- **Dashboard** – A React-based web application that consumes the Main App API to display Clients, Trades, My Clients, Employees, and Incentives with filtering and automatic updates when fresh data becomes available.
 
 ## Live Links
 
 - Mock BSE API: https://arham-zy2b.onrender.com/
-- Main App: https://arham-mainapp.onrender.com
+- Main App API: https://arham-mainapp.onrender.com
 - Dashboard: https://arham-mainapp-frontend.onrender.com/
 
 ## Tech Stack
 
-- Node.js
+- React (Vite)
 - Express.js
-- MongoDB
-- Mongoose
-
-
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /clients | Get clients |
-| GET | /trades | Get trades |
-| GET | /employees | Get employees |
-| GET | /mappings | Get employee-client mappings |
+- Node.js
+- Axios
+- JavaScript
 
 ## Features
 
