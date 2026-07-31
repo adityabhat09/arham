@@ -49,3 +49,7 @@ The solution was designed to satisfy the assignment's core requirements:
 - Stale-while-revalidate cache
 - Retry mechanism
 - Background refresh
+
+## Author
+
+Aditya Bhat
