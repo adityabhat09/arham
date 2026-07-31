@@ -1,6 +1,7 @@
 const { readCache, writeCache } = require("./cacheService");
 const { getClients, getTrades, getEmployees, getMappings } = require("./bseService");
 const retry = require("../utils/retry");
+const { broadcast } = require("./sseService");
 
 // ─── Refresh lock & time-gate ───────────────────────────────────────────────
 let isRefreshing  = false;
@@ -57,6 +58,9 @@ async function refreshDashboardCache() {
 
         lastRefreshedAt = Date.now();
         console.log(`✅ Cache refreshed — clients:${clients.length} trades:${trades.length} employees:${employees.length} mappings:${mappings.length}`);
+
+        // Push instant notification to all connected browser tabs
+        broadcast("cache-updated", { timestamp: lastRefreshedAt });
 
     } catch (err) {
         console.error("❌ Cache refresh error:", err.message);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSSE } from "../hooks/useSSE";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -24,11 +25,11 @@ export default function MyClients() {
             .then(res => setClients(res.data));
     };
 
-    useEffect(() => {
-        fetchMyClients();
-        const interval = setInterval(fetchMyClients, 2000);
-        return () => clearInterval(interval);
-    }, [selectedEmployee]);
+    // Re-fetch when employee selection changes
+    useEffect(() => { fetchMyClients(); }, [selectedEmployee]);
+
+    // Live update — re-fetch with current employee when cache changes
+    useSSE(fetchMyClients);
 
     const selectedName = employees.find(e => String(e.id) === selectedEmployee)?.name || "";
 
@@ -37,9 +38,7 @@ export default function MyClients() {
             <h2>My Clients</h2>
 
             <div style={{ marginBottom: "16px" }}>
-                <label htmlFor="emp-select" style={{ marginRight: "8px" }}>
-                    Employee:
-                </label>
+                <label htmlFor="emp-select" style={{ marginRight: "8px" }}>Employee:</label>
                 <select
                     id="emp-select"
                     value={selectedEmployee}

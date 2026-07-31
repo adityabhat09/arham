@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useSSE } from "../hooks/useSSE";
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -15,29 +16,25 @@ export default function Incentives() {
 
     const fetchIncentives = () => {
         if (selectedEmployee === "all") {
-            // Management view — all employees
             axios.get(`${API}/incentives`).then(res => setRows(res.data));
         } else {
-            // Individual employee view
             axios.get(`${API}/incentives/${selectedEmployee}`)
                 .then(res => setRows([res.data]));
         }
     };
 
-    useEffect(() => {
-        fetchIncentives();
-        const interval = setInterval(fetchIncentives, 5000);
-        return () => clearInterval(interval);
-    }, [selectedEmployee]);
+    // Re-fetch when employee selection changes
+    useEffect(() => { fetchIncentives(); }, [selectedEmployee]);
+
+    // Live update — re-fetch when cache changes
+    useSSE(fetchIncentives);
 
     return (
         <>
             <h2>Incentives</h2>
 
             <div style={{ marginBottom: "16px" }}>
-                <label htmlFor="emp-select" style={{ marginRight: "8px" }}>
-                    View as:
-                </label>
+                <label htmlFor="emp-select" style={{ marginRight: "8px" }}>View as:</label>
                 <select
                     id="emp-select"
                     value={selectedEmployee}

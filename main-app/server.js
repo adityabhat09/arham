@@ -11,6 +11,7 @@ const clientsRoute     = require("./routes/clients");
 const employeesRoute   = require("./routes/employees");
 const dashboardRoute   = require("./routes/dashboard");
 const tradesRoute      = require("./routes/trades");
+const eventsRoute      = require("./routes/events");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/incentives",  incentivesRoute);
 app.use("/my-clients",  myClientsRoute);
 app.use("/dashboard",   dashboardRoute);
+app.use("/events",      eventsRoute);
 app.use("/employees",   employeesRoute);
 app.use("/clients",     clientsRoute);
 app.use("/trades",      tradesRoute);
