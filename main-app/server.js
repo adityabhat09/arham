@@ -41,4 +41,13 @@ app.listen(PORT, () => {
     refreshDashboardCache().catch(err =>
         console.error("❌ Startup cache warm-up failed:", err.message)
     );
+
+    // Background job: Periodically fetch from BSE to keep the cache fresh.
+    // If new data is found and the cache is updated, the SSE service will 
+    // automatically push it to the frontend.
+    setInterval(() => {
+        refreshDashboardCache().catch(err => 
+            console.error("❌ Background cache refresh failed:", err.message)
+        );
+    }, 60 * 1000); // Check every 60 seconds (adjust as needed)
 });
