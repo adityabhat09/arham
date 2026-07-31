@@ -4,8 +4,8 @@
 
 This repository contains the solution for the Arham Fintech coding assignment, including:
 
-- Part A: Mock BSE API
-- Part B: Internal Dashboard
+- Part A: Mock BSE API  (/fake-bse-api  folder)
+- Part B: Internal Dashboard   (main-app/frontend)
 
 ## Live Links
 
