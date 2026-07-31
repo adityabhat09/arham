@@ -4,11 +4,13 @@ const Trade = require("../models/Trade");
 
 // GET /trades
 router.get("/", async (req, res) => {
-    // Simulate BSE API pain: 5 second delay
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    // Configurable simulated pain
+    const delayMs     = Number(process.env.BSE_DELAY_MS) || 5000;
+    const failureRate = Number(process.env.BSE_FAILURE_RATE) || 0.2;
+
+    await new Promise(resolve => setTimeout(resolve, delayMs));
     
-    // Simulate BSE API pain: 20% failure rate
-    if (Math.random() < 0.2) {
+    if (Math.random() < failureRate) {
         return res.status(500).json({ error: "BSE Connection Reset" });
     }
 
