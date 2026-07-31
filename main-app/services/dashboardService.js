@@ -10,10 +10,12 @@ let lastRefreshedAt = 0;
 const REFRESH_COOLDOWN_MS = Number(process.env.REFRESH_COOLDOWN_MS) || 5 * 60 * 1000;
 
 
-async function refreshDashboardCache() {
+async function refreshDashboardCache(force = false) {
 
     // Time-gate: skip if cache was refreshed recently
-    if (Date.now() - lastRefreshedAt < REFRESH_COOLDOWN_MS) {
+    // We subtract 5000ms (5 seconds) as a grace period to prevent race conditions.
+    // If 'force' is true (e.g. from a MongoDB Change Stream event), we bypass this cooldown.
+    if (!force && (Date.now() - lastRefreshedAt < (REFRESH_COOLDOWN_MS - 5000))) {
         console.log("⏱️  Cache is fresh, skipping refresh");
         return;
     }

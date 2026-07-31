@@ -4,6 +4,7 @@ const express = require("express");
 const cors    = require("cors");
 
 const { refreshDashboardCache } = require("./services/dashboardService");
+const { startWatcher } = require("./services/dbWatcher");
 
 const incentivesRoute  = require("./routes/incentives");
 const myClientsRoute   = require("./routes/myClients");
@@ -42,12 +43,7 @@ app.listen(PORT, () => {
         console.error("❌ Startup cache warm-up failed:", err.message)
     );
 
-    // Background job: Periodically fetch from BSE to keep the cache fresh.
-    // If new data is found and the cache is updated, the SSE service will 
-    // automatically push it to the frontend.
-    setInterval(() => {
-        refreshDashboardCache().catch(err => 
-            console.error("❌ Background cache refresh failed:", err.message)
-        );
-    }, 60 * 1000); // Check every 60 seconds (adjust as needed)
+    // Start listening to MongoDB Change Streams for true real-time updates
+    // Zero polling required.
+    startWatcher();
 });
