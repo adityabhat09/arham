@@ -47,9 +47,9 @@ export default function Trades() {
                     value={to}
                     onChange={e => setTo(e.target.value)}
                 />
-                <button onClick={loadTrades} style={{ marginLeft: "10px" }}>
+                {/* <button onClick={loadTrades} style={{ marginLeft: "10px" }}>
                     Search
-                </button>
+                </button> */}
             </div>
 
             <table>
