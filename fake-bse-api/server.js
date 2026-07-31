@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const connectDB = require("./db/connection");
 
 const app = express();
 
@@ -9,7 +10,6 @@ const clientsRoute = require("./routes/clients");
 const tradesRoute = require("./routes/trades");
 const employeesRoute = require("./routes/employees");
 const mappingsRoute = require("./routes/mappings");
-
 
 // Middleware
 app.use(express.json());
@@ -26,6 +26,9 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+// Connect to MongoDB Atlas, then start server
+connectDB().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
+    });
 });

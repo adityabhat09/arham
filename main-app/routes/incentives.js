@@ -1,44 +1,47 @@
-const {
-    refreshDashboardCache
-} = require("../services/dashboardService");
-
 const express = require("express");
-const router = express.Router();
-
+const router  = express.Router();
 const { readCache } = require("../services/cacheService");
 
-router.get("/:employeeId", async (req, res) => {
-
-    const { employeeId } = req.params;
-
-    const cache = await readCache();
-    console.log(`📦 Returning incentive data from cache`);
-
-    const { mappings, trades } = cache;
-
+/** Compute incentive for one employee given cache data */
+function computeIncentive(employee, mappings, trades) {
     const clientIds = mappings
-        .filter(mapping => mapping.employeeId == employeeId)
-        .map(mapping => mapping.clientId);
+        .filter(m => m.employeeId == employee.id)
+        .map(m => m.clientId);
 
-    const myTrades = trades.filter(trade =>
-        clientIds.includes(trade.clientId)
-    );
+    const myTrades     = trades.filter(t => clientIds.includes(t.clientId));
+    const totalQuantity = myTrades.reduce((sum, t) => sum + t.quantity, 0);
 
-    const totalQuantity = myTrades.reduce(
-        (sum, trade) => sum + trade.quantity,
-        0
-    );
-
-    const incentive = totalQuantity * 10;
-
-    res.json({
-        employeeId,
-        totalTrades: myTrades.length,
+    return {
+        employeeId:    employee.id,
+        employeeName:  employee.name,
+        totalTrades:   myTrades.length,
         totalQuantity,
-        incentive
-    });
-    refreshDashboardCache();
+        incentive:     totalQuantity * 10,
+    };
+}
 
+// GET /incentives — management view: all employees
+router.get("/", async (req, res) => {
+    const cache = await readCache();
+    console.log("📦 Returning incentives for all employees");
+    const all = cache.employees.map(emp =>
+        computeIncentive(emp, cache.mappings, cache.trades)
+    );
+    res.json(all);
+});
+
+// GET /incentives/:employeeId — individual employee view
+router.get("/:employeeId", async (req, res) => {
+    const { employeeId } = req.params;
+    const cache = await readCache();
+    console.log(`📦 Returning incentive for employee ${employeeId}`);
+
+    const employee = cache.employees.find(e => e.id == employeeId);
+    if (!employee) {
+        return res.status(404).json({ error: "Employee not found" });
+    }
+
+    res.json(computeIncentive(employee, cache.mappings, cache.trades));
 });
 
 module.exports = router;

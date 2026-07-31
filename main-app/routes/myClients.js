@@ -1,37 +1,20 @@
-const {
-    refreshDashboardCache
-} = require("../services/dashboardService");
-
 const express = require("express");
-const router = express.Router();
-
+const router  = express.Router();
 const { readCache } = require("../services/cacheService");
 
+// GET /my-clients/:employeeId — returns only clients mapped to this employee
 router.get("/:employeeId", async (req, res) => {
-
     const { employeeId } = req.params;
-
     const cache = await readCache();
-    
 
-    // console.log(cache);
+    const clientIds = cache.mappings
+        .filter(m => m.employeeId == employeeId)
+        .map(m => m.clientId);
 
-
-    const mappings = cache.mappings;
-    const clients = cache.clients;
-
-    const clientIds = mappings
-        .filter(mapping => mapping.employeeId == employeeId)
-        .map(mapping => mapping.clientId);
-
-    const myClients = clients.filter(client =>
-    clientIds.includes(client.id)
-);
-console.log(`📦 Returning ${myClients.length} assigned clients from cache`);
+    const myClients = cache.clients.filter(c => clientIds.includes(c.id));
+    console.log(`📦 Returning ${myClients.length} assigned clients for employee ${employeeId}`);
 
     res.json(myClients);
-    refreshDashboardCache();
-
 });
 
 module.exports = router;
