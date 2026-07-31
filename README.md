@@ -7,6 +7,12 @@ This repository contains the solution for the Arham Fintech coding assignment, i
 - Part A: Mock BSE API
 - Part B: Internal Dashboard
 
+## Live Links
+
+- Mock BSE API: https://arham-zy2b.onrender.com/
+- Main App API: https://arham-mainapp.onrender.com
+- Dashboard: https://arham-mainapp-frontend.onrender.com/
+
 ## Overview
 
 This project consists of three components:
@@ -17,11 +23,13 @@ This project consists of three components:
 
 - **Dashboard** – A React-based web application that consumes the Main App API to display Clients, Trades, My Clients, Employees, and Incentives with filtering and automatic updates when fresh data becomes available.
 
-## Live Links
+## Hard Requirements
 
-- Mock BSE API: https://arham-zy2b.onrender.com/
-- Main App API: https://arham-mainapp.onrender.com
-- Dashboard: https://arham-mainapp-frontend.onrender.com/
+The solution was designed to satisfy the assignment's core requirements:
+
+- **Fast page loads (< 1 second):** The Main App API serves cached data immediately using a stale-while-revalidate caching strategy, allowing pages to load quickly even if the Mock BSE API is slow or temporarily unavailable.
+
+- **Automatic updates without page refresh:** The dashboard periodically polls (every 5s) the Main App API for fresh data. When the backend cache is updated, open dashboard pages automatically display the latest information without requiring the user to refresh the browser.
 
 ## Tech Stack
 
