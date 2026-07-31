@@ -13,7 +13,7 @@ This repository contains the solution for the Arham Fintech coding assignment, i
 - Main App API: https://arham-mainapp.onrender.com
 - Dashboard: https://arham-mainapp-frontend.onrender.com/
 
-## Documentation
+## Architecture, Reasoning, 100x data flow shortnote
 
 - 📄 [Architecture Document](docs/arham.architecture.pdf)
 
