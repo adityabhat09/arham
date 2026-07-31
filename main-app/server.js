@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors    = require("cors");
+const mongoose = require("mongoose");
 
 const { refreshDashboardCache } = require("./services/dashboardService");
 const { startWatcher } = require("./services/dbWatcher");
@@ -33,8 +34,20 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Main App running on http://localhost:${PORT}`);
+
+    // Connect to MongoDB to store our persistent cache
+    if (process.env.MONGODB_URI) {
+        try {
+            await mongoose.connect(process.env.MONGODB_URI);
+            console.log("✅ Main App connected to MongoDB Cache");
+        } catch (err) {
+            console.error("❌ Failed to connect to MongoDB Cache:", err.message);
+        }
+    } else {
+        console.warn("⚠️ MONGODB_URI not found. Persistent cache disabled.");
+    }
 
     // Trigger an initial cache warm-up on startup so the first user
     // request is never met with empty data.

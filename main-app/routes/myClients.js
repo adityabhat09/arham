@@ -1,6 +1,6 @@
 const express = require("express");
 const router  = express.Router();
-const { readCache } = require("../services/cacheService");
+const { readCache } = require("../services/dashboardService");
 
 // GET /my-clients/:employeeId — returns only clients mapped to this employee
 router.get("/:employeeId", async (req, res) => {

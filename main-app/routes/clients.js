@@ -1,6 +1,6 @@
 const express = require("express");
 const router  = express.Router();
-const { readCache } = require("../services/cacheService");
+const { readCache } = require("../services/dashboardService");
 
 // GET /clients — served instantly from cache
 router.get("/", async (req, res) => {

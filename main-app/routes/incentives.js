@@ -1,6 +1,6 @@
 const express = require("express");
 const router  = express.Router();
-const { readCache } = require("../services/cacheService");
+const { readCache } = require("../services/dashboardService");
 
 /** Compute incentive for one employee given cache data */
 function computeIncentive(employee, mappings, trades) {

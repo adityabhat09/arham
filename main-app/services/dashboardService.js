@@ -1,13 +1,46 @@
-const { readCache, writeCache } = require("./cacheService");
 const { getClients, getTrades, getEmployees, getMappings } = require("./bseService");
 const retry = require("../utils/retry");
 const { broadcast } = require("./sseService");
+const Cache = require("../models/Cache");
 
 // ─── Refresh lock & time-gate ───────────────────────────────────────────────
 let isRefreshing  = false;
 let lastRefreshedAt = 0;
 // Configurable via env — set REFRESH_COOLDOWN_MS=60000 on Render for demo
 const REFRESH_COOLDOWN_MS = Number(process.env.REFRESH_COOLDOWN_MS) || 5 * 60 * 1000;
+
+async function readCache() {
+    try {
+        let cache = await Cache.findOne({ key: "singleton" }).lean();
+        if (!cache) {
+            return { clients: [], trades: [], employees: [], mappings: [] };
+        }
+        return cache;
+    } catch (err) {
+        console.error("Cache read error:", err);
+        return { clients: [], trades: [], employees: [], mappings: [] };
+    }
+}
+
+async function writeCache(data) {
+    try {
+        await Cache.findOneAndUpdate(
+            { key: "singleton" },
+            {
+                clients: data.clients,
+                trades: data.trades,
+                employees: data.employees,
+                mappings: data.mappings,
+                lastUpdated: new Date()
+            },
+            { upsert: true, new: true }
+        );
+        // Push instant notification to all connected browser tabs
+        broadcast("cache-updated", { timestamp: lastRefreshedAt });
+    } catch (err) {
+        console.error("❌ Failed to write cache to MongoDB:", err.message);
+    }
+}
 
 
 async function refreshDashboardCache(force = false) {
@@ -63,9 +96,6 @@ async function refreshDashboardCache(force = false) {
         lastRefreshedAt = Date.now();
         console.log(`✅ Cache refreshed — clients:${clients.length} trades:${trades.length} employees:${employees.length} mappings:${mappings.length}`);
 
-        // Push instant notification to all connected browser tabs
-        broadcast("cache-updated", { timestamp: lastRefreshedAt });
-
     } catch (err) {
         console.error("❌ Cache refresh error:", err.message);
     } finally {
@@ -73,4 +103,4 @@ async function refreshDashboardCache(force = false) {
     }
 }
 
-module.exports = { refreshDashboardCache };
+module.exports = { refreshDashboardCache, readCache };
