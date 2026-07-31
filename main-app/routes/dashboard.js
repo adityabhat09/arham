@@ -1,7 +1,7 @@
 const {
     readCache,
     writeCache
-} = require("../services/cacheService");
+} = require("../services/dashboardService");
 const {
     refreshDashboardCache
 } = require("../services/dashboardService");
