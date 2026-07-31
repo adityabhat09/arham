@@ -18,42 +18,73 @@ This repository contains the solution for the Arham Fintech coding assignment, i
 - 📄 [Architecture Document](docs/arham.architecture.pdf)
 
 ## Overview
-
 This project consists of three components:
+1. **Mock BSE API** – Simulates the external BSE Exchange API by providing client and trade data with configurable delays and random failures to mimic real-world conditions.
+2. **Main App API** – Acts as the backend service that fetches data from the Mock BSE API, combines it with internal employee and client-mapping data, maintains a persistent MongoDB cache, retries failed requests, and exposes APIs for the dashboard.
+3. **Dashboard** – A React-based web application that consumes the Main App API to display Clients, Trades, My Clients, Employees, and Incentives with filtering and automatic real-time updates.
 
-- **Mock BSE API** – Simulates the external BSE Exchange API by providing client and trade data with configurable delays and random failures to mimic real-world conditions.
 
-- **Main App API** – Acts as the backend service that fetches data from the Mock BSE API, combines it with internal employee and client-mapping data, maintains a stale-while-revalidate cache, retries failed requests, and exposes APIs for the dashboard.
+## Hard Requirements Satisfied
+The solution was strictly designed to satisfy the assignment's core constraints:
 
-- **Dashboard** – A React-based web application that consumes the Main App API to display Clients, Trades, My Clients, Employees, and Incentives with filtering and automatic updates when fresh data becomes available.
+- **Fast page loads (< 1 second):** The Main App API serves cached data immediately using a database-persisted fallback cache. If the BSE API experiences a 10-minute delay or total failure, the system survives the 30-second network timeout, gracefully aborts the request, and instantly serves the persistent cache to ensure zero UI disruption.
 
-## Hard Requirements
+- **Automatic updates without page refresh:** Instead of inefficient HTTP polling, the system uses **MongoDB Change Streams** combined with **Server-Sent Events (SSE)**. When the database changes, the backend detects it instantly and pushes the fresh data directly to the React frontend, updating the UI in real-time.
 
-The solution was designed to satisfy the assignment's core requirements:
-
-- **Fast page loads (< 1 second):** The Main App API serves cached data immediately using a stale-while-revalidate caching strategy, allowing pages to load quickly even if the Mock BSE API is slow or temporarily unavailable.
-
-- **Automatic updates without page refresh:** The dashboard periodically polls (every 5s) the Main App API for fresh data. When the backend cache is updated, open dashboard pages automatically display the latest information without requiring the user to refresh the browser.
 
 ## Tech Stack
+- **Frontend:** React (Vite)
+- **Backend:** Express.js, Node.js
+- **Database:** MongoDB Atlas
+- **Real-time:** Server-Sent Events (SSE), MongoDB Change Streams
+---
 
-- React (Vite)
-- Express.js
-- Node.js
-- Axios
-- JavaScript
+## Local Setup & Database Instructions
+If you wish to run this project locally, you will need a free MongoDB Atlas cluster.
+### 1. Database Setup
+1. Create a MongoDB Atlas cluster.
+2. Get your connection string (e.g., `mongodb+srv://<user>:<password>@cluster...`).
+### 2. Start the Mock BSE API
 
-## Features
+cd fake-bse-api
+npm install
 
-- Clients
-- Trades with filters
-- My Clients
-- Employees
-- Incentives
-- Stale-while-revalidate cache
-- Retry mechanism
-- Background refresh
+-  Create a .env file in fake-bse-api:
 
-## Author
+PORT=3000
+MONGODB_URI=your_mongodb_connection_string
+BSE_DELAY_MS=5000 
+BSE_FAILURE_RATE=0.2
 
-Aditya Bhat
+- Seed the Database (Run this once to populate the initial fake data):
+
+node db/seed.js
+
+### 3. Start the Main App API
+
+cd main-app
+npm install
+
+- Create a .env file in main-app:
+
+PORT=4000
+BSE_API=http://localhost:3000
+MONGODB_URI=your_mongodb_connection_string
+REFRESH_COOLDOWN_MS=60000
+
+- Start the service:
+
+bash
+npm start
+
+### 4. Start the React Dashboard
+
+cd main-app/frontend
+npm install
+
+
+- Create a .env file in main-app/frontend:
+VITE_API_URL=http://localhost:4000
+
+- Start the dashboard:
+npm run dev
